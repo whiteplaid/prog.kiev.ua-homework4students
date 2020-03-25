@@ -29,10 +29,9 @@ public class App {
         }
     }
     private static int countStudents(String group) {
-        int count = 0;
-        Group g = (Group) em.createQuery("SELECT g FROM Group g WHERE g.name = ?1").setParameter(1,group).getSingleResult();
-        for (Student student:g.getStudent()) count++;
-        return count;
+        long id = (long) em.createQuery("SELECT g.id FROM Group g WHERE g.name = ?1").setParameter(1,group).getSingleResult();
+        long count = (long) em.createQuery("SELECT COUNT (s.id) FROM Student s WHERE s.group.id=?1").setParameter(1,id).getSingleResult();
+        return (int) count;
     }
     private static void flushGroup (Group group) {
         String[] namesMale = {"Andrey","Pavel","Anton","Alexander","Kirill","Ivan"};
