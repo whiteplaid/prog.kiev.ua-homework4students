@@ -3,7 +3,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Random;
-
+import java.util.List;
 public class App {
     public static EntityManagerFactory emf;
     public static EntityManager em;
@@ -22,11 +22,16 @@ public class App {
                 e.printStackTrace();
                 em.getTransaction().rollback();
             }
-            System.out.println(countStudents("alpha"));
+            for (Group groups: findAllGroups()) {
+                System.out.println(groups.getName() + " " + countStudents(groups.getName()));
+            }
         } finally {
             em.close();
             emf.close();
         }
+    }
+    private static List<Group> findAllGroups () {
+        return em.createQuery("SELECT g FROM Group g").getResultList();
     }
     private static int countStudents(String group) {
         long id = (long) em.createQuery("SELECT g.id FROM Group g WHERE g.name = ?1").setParameter(1,group).getSingleResult();
